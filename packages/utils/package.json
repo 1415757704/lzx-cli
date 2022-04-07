@@ -1,6 +1,6 @@
 {
   "name": "@lzx-cli/utils",
-  "version": "0.0.2",
+  "version": "0.0.1",
   "description": "工具包",
   "author": "河马先生 <1415757704@qq.com>",
   "homepage": "",
@@ -14,7 +14,7 @@
     "lib"
   ],
   "publishConfig": {
-    "registry": "https://registry.npm.taobao.org/"
+    "access": "public"
   },
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1"
