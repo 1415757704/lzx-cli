@@ -5,7 +5,8 @@ const semver = require('semver')
 module.exports = {
     fetchNpmPgkInfo,
     getNpmPgkVersions,
-    getNpmPgkLasterVerion
+    getNpmPgkLasterVerion,
+    getDefaultRegistry
 };
 
 const axios = require('axios')
@@ -38,3 +39,7 @@ async function getNpmPgkLasterVerion(pgkName, npmOriginUrl) {
 
     return versions.sort((a, b) => semver.gt(b, a))[0]
 }
+
+function getDefaultRegistry(isOriginal = false) {
+    return isOriginal ? 'https://registry.npmjs.org' : 'https://registry.npm.taobao.org';
+  }

@@ -1,13 +1,11 @@
 {
-  "name": "@lzx-cli/core",
+  "name": "@lzx-cli/package",
   "version": "0.0.3",
   "description": "> TODO: description",
   "author": "河马先生 <1415757704@qq.com>",
   "homepage": "https://github.com/1415757704/lzx-cli#readme",
   "license": "ISC",
-  "bin": {
-    "lzx-cli": "bin/index.js"
-  },
+  "main": "lib/index.js",
   "directories": {
     "lib": "lib",
     "test": "__tests__"
@@ -15,6 +13,9 @@
   "files": [
     "lib"
   ],
+  "publishConfig": {
+    "registry": "https://registry.npm.taobao.org/"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/1415757704/lzx-cli.git"
@@ -27,16 +28,6 @@
   },
   "dependencies": {
     "@lzx-cli/get-npm-info": "file:../../utils/get-npm-info",
-    "@lzx-cli/log": "file:../../utils/log",
-    "@lzx-cli/exec": "file:../exec",
-    "colors": "^1.4.0",
-    "commander": "^9.1.0",
-    "dotenv": "^16.0.0",
-    "import-local": "^3.1.0",
-    "npmlog": "^6.0.1",
-    "path-exists": "^5.0.0",
-    "root-check": "^2.0.0",
-    "semver": "^7.3.6",
-    "user-home": "^3.0.0"
+    "npminstall": "^6.1.0"
   }
 }

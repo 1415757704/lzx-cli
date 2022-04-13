@@ -9,16 +9,57 @@ const { loadESM } = require('./utils')
 const userHome = require('user-home')
 const colors = require('colors/safe');
 const path = require('path')
+const fs = require('fs')
 const dotenv = require('dotenv')
-const { DEFAULT_CLI_HOME } = require('./const')
+const { DEFAULT_CLI_HOME, DEFEALT_CACHE_DIR } = require('./const')
 const semver = require('semver')
+const commander = require('commander');
+const exec = require('@lzx-cli/exec')
+
+const program = new commander.Command()
 
 async function core() {
     try {
       await prepare();
+      registerCli();
     } catch (e) {
       log.error(e.message);
     }
+}
+
+function registerCli() {
+    program
+        .name(Object.keys(pgk.bin)[0])
+        .usage('<command> [options]')
+        .version(pgk.version)
+        .option('-d, --debug', '是否开启调试', false)
+        .option('-tp, --targetPath <targetPath>', '本地调试command指令处理包的文件路径', '')
+
+    program
+        .command('init [projectName]')
+        .option('-f, --force', '是否强制初始化项目')
+        .action(exec);
+    
+    // 监听debug option
+    program.on('option:debug', () => {
+        const { debug } = program.opts()
+        process.env.LOG_LEVEL = debug ? 'verbose' : 'info'
+        log.level = process.env.LOG_LEVEL
+    })
+
+    program.on('option:targetPath', () => {
+        const { targetPath } = program.opts()
+        process.env.CLI_TARGET_PATH = targetPath
+    })
+
+    // 监听错误的command
+    program.on('command:*', function (obj) {
+        const availableCommands = program.commands.map(cmd => cmd.name());
+        log.error('command error', `未知命令:${colors.red(obj.join('、'))}`)
+        log.notice('available commands', `可用命令:${colors.green(availableCommands.join('、'))}`)
+    })
+
+    program.parse(process.argv);
 }
 
 async function prepare() {
@@ -27,6 +68,20 @@ async function prepare() {
     await checkUserHome()
     await loadEnv()
     await checkCliIsLaster()
+    await mkCachePath()
+}
+
+// 创建处理command指令对应的npm包的文件夹，用于后续的下载缓存
+async function mkCachePath() {
+    !process.env.CACHE_COMMAND_PGK_FNAME && (process.env.CACHE_COMMAND_PGK_FNAME = DEFEALT_CACHE_DIR)
+
+    const pathExists = (await loadESM('path-exists')).pathExistsSync
+    const { CLI_HOME_PATH, CACHE_COMMAND_PGK_FNAME } = process.env
+    const cachePath = path.resolve(CLI_HOME_PATH, CACHE_COMMAND_PGK_FNAME)
+
+    if (!pathExists(cachePath)) {
+        fs.mkdirSync(cachePath, { recursive: true })
+    }
 }
 
 function checkPkgVersion() {
