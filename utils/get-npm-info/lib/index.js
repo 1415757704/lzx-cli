@@ -34,9 +34,9 @@ async function getNpmPgkVersions(pgkName, npmOriginUrl) {
 } 
 
 async function getNpmPgkLasterVerion(pgkName, npmOriginUrl) {
-    const versions = await getNpmPgkVersions(pgkName, npmOriginUrl)
+    const versions = await getNpmPgkVersions(pgkName, npmOriginUrl || getDefaultRegistry())
     if (!versions || versions.length === 0) return null
-
+   
     return versions.sort((a, b) => semver.gt(b, a))[0]
 }
 

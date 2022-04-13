@@ -1,5 +1,5 @@
 {
-  "name": "@lzx-cli/package",
+  "name": "@lzx-cli/init",
   "version": "0.0.3",
   "description": "> TODO: description",
   "author": "河马先生 <1415757704@qq.com>",
@@ -25,10 +25,5 @@
   },
   "bugs": {
     "url": "https://github.com/1415757704/lzx-cli/issues"
-  },
-  "dependencies": {
-    "@lzx-cli/get-npm-info": "file:../../utils/get-npm-info",
-    "npminstall": "^6.1.0",
-    "pkg-dir": "^5.0.0"
   }
 }

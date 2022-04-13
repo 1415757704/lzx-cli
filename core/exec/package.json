@@ -24,6 +24,8 @@
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "dependencies": {
+    "@lzx-cli/log": "file:../../utils/log",
+    "@lzx-cli/utils": "file:../../utils/utils",
     "@lzx-cli/package": "file:../../models/package"
   },
   "bugs": {

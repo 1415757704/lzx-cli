@@ -1,11 +1,2 @@
-# `@lzx-cli/package`
-
-> TODO: description
-
-## Usage
-
-```
-const package = require('@lzx-cli/package');
-
-// TODO: DEMONSTRATE API
-```
+#### 执行命令
+lzx-cli init testProject -tp /Users/hemaxiansheng/项目/架 构师项目/lzx-cli/commands/init

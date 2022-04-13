@@ -26,9 +26,9 @@
     "url": "https://github.com/1415757704/lzx-cli/issues"
   },
   "dependencies": {
+    "@lzx-cli/exec": "file:../exec",
     "@lzx-cli/get-npm-info": "file:../../utils/get-npm-info",
     "@lzx-cli/log": "file:../../utils/log",
-    "@lzx-cli/exec": "file:../exec",
     "colors": "^1.4.0",
     "commander": "^9.1.0",
     "dotenv": "^16.0.0",

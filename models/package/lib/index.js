@@ -3,7 +3,7 @@
 const path = require('path')
 const fs = require('fs')
 const npminstall = require('npminstall')
-const { getDefaultRegistry } = require('@lzx-cli/get-npm-info')
+const { getDefaultRegistry, getNpmPgkLasterVerion } = require('@lzx-cli/get-npm-info')
 
 class Package {
     /**
@@ -22,13 +22,23 @@ class Package {
         return path.resolve(CLI_HOME_PATH, CACHE_COMMAND_PGK_FNAME)
     }
     // 缓存的包名
-    get pgkNameInCache() {
+    async pgkNameInCache() {
+        const curPgkVersion = await this.curPgkVersion()
         const pgkNamePrefix = this.packageName.replace('/', '_');
-        return `_${pgkNamePrefix}@${this.packageVersion}@${this.packageName}`
+        return `_${pgkNamePrefix}@${curPgkVersion}@${this.packageName}`
+    }
+
+    async curPgkVersion() {
+        return this.packageVersion === 'latest' ? await getNpmPgkLasterVerion(this.packageName) : this.packageVersion
+    }
+
+    // 获取包在本地的路径
+    async getPackagePathInLocal() {
+        return this.localPgkPath || path.resolve(this.cachePackagePath, await this.pgkNameInCache())
     }
 
     async exists() {
-        const pgkPath = this.localPgkPath || path.resolve(this.cachePackagePath, this.pgkNameInCache)
+        const pgkPath = await this.getPackagePathInLocal()
         try {
             await fs.accessSync(pgkPath)
             return true
@@ -37,21 +47,24 @@ class Package {
         }
     }
 
-    update() {
-        console.log('update')
-    }
-
-    install() {
-        console.log('install', this.cachePackagePath, getDefaultRegistry(), this.packageName, this.packageVersion)
+    async install() {
         npminstall({
             root: process.env.CLI_HOME_PATH,
             storeDir: this.cachePackagePath,
             registry: getDefaultRegistry(),
             pkgs: [{
                 name: this.packageName,
-                version: this.packageVersion
+                version: await this.curPgkVersion()
             }]
         })
+    }
+
+    async getEntryFile() {
+        const modulesPath = await this.getPackagePathInLocal()
+        const pgkDir = (await import('pkg-dir')).sync(modulesPath)
+        const pkgJsonPath = path.resolve(pgkDir, 'package.json')
+        const packageJsonFile = require(pkgJsonPath)
+        return packageJsonFile.main ? path.resolve(pgkDir, packageJsonFile.main) : null
     }
 }
 
