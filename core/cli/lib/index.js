@@ -11,7 +11,7 @@ const colors = require('colors/safe');
 const path = require('path')
 const fs = require('fs')
 const dotenv = require('dotenv')
-const { DEFAULT_CLI_HOME, DEFEALT_CACHE_DIR } = require('./const')
+const { DEFAULT_CLI_HOME, DEFEALT_CACHE_DIR, LASTER_NODE_VERSION, DEFAULT_TEMPLATE_DIR } = require('./const')
 const semver = require('semver')
 const commander = require('commander');
 const exec = require('@lzx-cli/exec')
@@ -67,13 +67,20 @@ async function prepare() {
     await checkRoot()
     await checkUserHome()
     await loadEnv()
+    checkNodeVersion()
     await checkCliIsLaster()
     await mkCachePath()
+}
+
+function checkNodeVersion() {
+    if (!semver.gte(process.version, LASTER_NODE_VERSION)) 
+        throw new Error(`当前node的版本不能低于${LASTER_NODE_VERSION}`)
 }
 
 // 创建处理command指令对应的npm包的文件夹，用于后续的下载缓存
 async function mkCachePath() {
     !process.env.CACHE_COMMAND_PGK_FNAME && (process.env.CACHE_COMMAND_PGK_FNAME = DEFEALT_CACHE_DIR)
+    !process.env.TEMPLATE_CACHE_DIR && (process.env.TEMPLATE_CACHE_DIR = DEFAULT_TEMPLATE_DIR)
 
     const pathExists = (await loadESM('path-exists')).pathExistsSync
     const { CLI_HOME_PATH, CACHE_COMMAND_PGK_FNAME } = process.env

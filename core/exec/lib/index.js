@@ -8,7 +8,7 @@ const log = require('@lzx-cli/log')
 
 // 指令到处理包的映射
 const packageMap = {
-    init: '@lzx-cli/init'
+    init: '@lzx-cli/core'
 }
 
 async function exec() {
@@ -68,7 +68,6 @@ async function exec() {
             process.exit(1);
         });
         child.on('exit', e => {
-            log.success('命令执行成功:' + e);
             process.exit(e);
         });
     } catch(err) {

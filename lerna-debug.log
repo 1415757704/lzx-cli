@@ -1,11 +1,18 @@
 0 silly argv {
-0 silly argv   _: [ 'add' ],
-0 silly argv   globs: [],
+0 silly argv   _: [ 'create' ],
 0 silly argv   lernaVersion: '4.0.0',
 0 silly argv   '$0': 'lerna',
-0 silly argv   pkg: '@lzx-cli/commands'
+0 silly argv   name: 'request'
 0 silly argv }
 1 notice cli v4.0.0
 2 verbose rootPath /Users/hemaxiansheng/项目/架构师项目/lzx-cli
-3 error HttpErrorGeneral: 404 Not Found - GET https://registry.npmmirror.com/@lzx-cli%2fcommands - [NOT_FOUND] @lzx-cli/commands not found
-3 error     at /Users/hemaxiansheng/项目/架构师项目/lzx-cli/node_modules/pacote/node_modules/npm-registry-fetch/check-response.js:95:15
+3 error Error: canceled
+3 error     at Interface.<anonymous> (/Users/hemaxiansheng/项目/架构师项目/lzx-cli/node_modules/read/lib/read.js:66:13)
+3 error     at Interface.emit (events.js:375:28)
+3 error     at Interface._ttyWrite (readline.js:910:16)
+3 error     at ReadStream.onkeypress (readline.js:235:10)
+3 error     at ReadStream.emit (events.js:375:28)
+3 error     at emitKeys (internal/readline/utils.js:358:14)
+3 error     at emitKeys.next (<anonymous>)
+3 error     at ReadStream.onData (readline.js:1179:36)
+3 error     at ReadStream.emit (events.js:375:28)

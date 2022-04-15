@@ -29,6 +29,7 @@
   "dependencies": {
     "@lzx-cli/get-npm-info": "file:../../utils/get-npm-info",
     "npminstall": "^6.1.0",
-    "pkg-dir": "^5.0.0"
+    "pkg-dir": "^5.0.0",
+    "path-exists": "^4.0.0"
   }
 }

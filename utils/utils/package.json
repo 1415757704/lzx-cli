@@ -22,5 +22,8 @@
   },
   "bugs": {
     "url": "https://github.com/1415757704/lzx-cli/issues"
+  },
+  "dependencies": {
+    "cli-spinner": "^0.2.10"
   }
 }

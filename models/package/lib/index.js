@@ -1,8 +1,8 @@
 'use strict';
 
 const path = require('path')
-const fs = require('fs')
 const npminstall = require('npminstall')
+const pathExists = require('path-exists').sync;
 const { getDefaultRegistry, getNpmPgkLasterVerion } = require('@lzx-cli/get-npm-info')
 
 class Package {
@@ -11,15 +11,16 @@ class Package {
      * @param packageVersion：版本号
      * @param localPgkPath：本地包的路径，这个一般用于测试
      */
-    constructor({ packageName, packageVersion, localPgkPath }) {
+    constructor({ packageName, packageVersion, localPgkPath, storeDir }) {
         this.packageName = packageName
         this.packageVersion = packageVersion
         this.localPgkPath = localPgkPath
+        this.storeDir = storeDir || process.env.CACHE_COMMAND_PGK_FNAME
     }
     // 缓存的路径
     get cachePackagePath() {
-        const { CLI_HOME_PATH, CACHE_COMMAND_PGK_FNAME } = process.env
-        return path.resolve(CLI_HOME_PATH, CACHE_COMMAND_PGK_FNAME)
+        const { CLI_HOME_PATH } = process.env
+        return path.resolve(CLI_HOME_PATH, this.storeDir)
     }
     // 缓存的包名
     async pgkNameInCache() {
@@ -39,12 +40,7 @@ class Package {
 
     async exists() {
         const pgkPath = await this.getPackagePathInLocal()
-        try {
-            await fs.accessSync(pgkPath)
-            return true
-        } catch(err) {
-            return false
-        }
+        return pathExists(pgkPath)
     }
 
     async install() {

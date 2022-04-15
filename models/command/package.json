@@ -1,5 +1,5 @@
 {
-  "name": "@lzx-cli/init",
+  "name": "@lzx-cli/command",
   "version": "0.0.3",
   "description": "> TODO: description",
   "author": "河马先生 <1415757704@qq.com>",
@@ -27,13 +27,6 @@
     "url": "https://github.com/1415757704/lzx-cli/issues"
   },
   "dependencies": {
-    "@lzx-cli/package": "file:../../models/package",
-    "@lzx-cli/command": "file:../../models/command",
-    "@lzx-cli/exec": "file:../exec",
-    "@lzx-cli/request": "file:../../utils/request",
-    "@lzx-cli/utils": "file:../../utils/utils",
-    "@lzx-cli/log": "file:../../utils/log",
-    "fs-extra": "^10.0.1",
-    "inquirer": "^8.2.2"
+    "@lzx-cli/log": "file:../../utils/log"
   }
 }
