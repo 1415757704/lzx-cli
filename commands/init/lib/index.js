@@ -4,15 +4,18 @@ const Command = require('@lzx-cli/command')
 const fs = require('fs')
 const path = require('path')
 const fse = require('fs-extra')
+const glob = require('glob');
+const ejs = require('ejs');
 const inquirer = require('inquirer')
 const { getProjectTemplate } = require('./getProjectTemplate')
 const semver = require('semver');
 const Package = require('@lzx-cli/package');
-const { spinnerStart, sleep, execAsync } = require('@lzx-cli/utils');
+const { spinnerStart, sleep } = require('@lzx-cli/utils');
 const log = require("@lzx-cli/log")
 
 const TYPE_PROJECT = 'project';
 const TYPE_COMPONENT = 'component';
+const WHITE_CMD = ['npm', 'cnpm'];
 
 class InitCommand extends Command {
     constructor(args) {
@@ -71,14 +74,77 @@ class InitCommand extends Command {
         spinner.stop(true);
         log.success('模板安装成功');
       }
-      // const templateIgnore = this.templateInfo.ignore || [];
-      // const ignore = ['**/node_modules/**', ...templateIgnore];
-      // await this.ejsRender({ ignore });
-      // const { installCommand, startCommand } = this.templateInfo;
-      // // 依赖安装
-      // await this.execCommand(installCommand, '依赖安装失败！');
-      // // 启动命令执行
-      // await this.execCommand(startCommand, '启动执行命令失败！');
+
+      // 使用ejs渲染替换模版中的一些信息，实现动态替换的效果 
+      const templateIgnore = this.projectInfo.ignore || [];
+      const ignore = ['**/node_modules/**', ...templateIgnore];
+      await this.ejsRender({ ignore });
+
+      const { installCommand, startCommand } = this.projectInfo;
+      try {
+        // 依赖安装
+        await this.execCommand(installCommand, '依赖安装失败！');
+        // 启动命令执行
+        await this.execCommand(startCommand, '启动执行命令失败！');
+      } catch(err) {
+        log.error('command error', err.message)
+      }
+    }
+
+    async ejsRender(options) {
+      const dir = process.cwd();
+      const projectInfo = this.projectInfo;
+      return new Promise((resolve, reject) => {
+        glob('**', {
+          cwd: dir,
+          ignore: options.ignore || '',
+          nodir: true,
+        }, function(err, files) {
+          if (err) {
+            reject(err);
+          }
+          Promise.all(files.map(file => {
+            const filePath = path.join(dir, file);
+            return new Promise((resolve1, reject1) => {
+              ejs.renderFile(filePath, projectInfo, {}, (err, result) => {
+                if (err) {
+                  reject1(err);
+                } else {
+                  fse.writeFileSync(filePath, result);
+                  resolve1(result);
+                }
+              });
+            });
+          })).then(() => {
+            resolve();
+          }).catch(err => {
+            reject(err);
+          });
+        });
+      });
+    }
+
+    async execCommand(command, errMsg) {
+      if (command) {
+        const cmdArr = command.split(' ')
+        const cmd = cmdArr[0]
+        const opts = cmdArr.slice(1)
+        if (!this.checkCommand(WHITE_CMD, cmd)) throw new Error(`当前指令不合法: ${ cmd }`)
+        
+        try {
+          require('child_process').execSync(command, {
+            stdio: 'inherit',
+            cwd: process.cwd(),
+          })
+        } catch(err) {
+          throw new Error(`${errMsg}: ${command}指令执行失败，请尝试手动执行`)
+        }
+      }
+    }
+
+    checkCommand(whiteCmds, cmd) {
+      if (cmd || whiteCmds.includes(cmd.toLowerCare())) return true
+      return false
     }
 
     curProjectTemplate() {
@@ -228,7 +294,8 @@ class InitCommand extends Command {
         }
 
         const info = await inquirer.prompt(projectPrompt)
-        Object.assign(projectInfo, { ...info, type })
+        const tempInfo = this.template.filter(({ npmName }) => npmName === info.projectTemplate)[0]
+        Object.assign(projectInfo, { ...tempInfo, ...info, type })
         this.projectInfo = projectInfo
     }
 }
@@ -238,7 +305,3 @@ module.exports = init;
 function init() {
     new InitCommand(arguments[0])
 }
-
-// 录入模版相关信息
-// 下载模版
-// 安装模版

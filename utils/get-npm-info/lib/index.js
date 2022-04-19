@@ -34,12 +34,12 @@ async function getNpmPgkVersions(pgkName, npmOriginUrl) {
 } 
 
 async function getNpmPgkLasterVerion(pgkName, npmOriginUrl) {
-    const versions = await getNpmPgkVersions(pgkName, npmOriginUrl || getDefaultRegistry())
+    const versions = await getNpmPgkVersions(pgkName, npmOriginUrl || getDefaultRegistry(true))
     if (!versions || versions.length === 0) return null
-   
-    return versions.sort((a, b) => semver.gt(b, a))[0]
+    
+    return versions.sort((a, b) => semver.gt(b, a) ? 1 : -1)[0]
 }
 
 function getDefaultRegistry(isOriginal = false) {
     return isOriginal ? 'https://registry.npmjs.org' : 'https://registry.npm.taobao.org';
-  }
+}

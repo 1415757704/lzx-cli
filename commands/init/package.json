@@ -27,13 +27,16 @@
     "url": "https://github.com/1415757704/lzx-cli/issues"
   },
   "dependencies": {
-    "@lzx-cli/package": "file:../../models/package",
     "@lzx-cli/command": "file:../../models/command",
     "@lzx-cli/exec": "file:../exec",
+    "@lzx-cli/log": "file:../../utils/log",
+    "@lzx-cli/package": "file:../../models/package",
     "@lzx-cli/request": "file:../../utils/request",
     "@lzx-cli/utils": "file:../../utils/utils",
-    "@lzx-cli/log": "file:../../utils/log",
+    "ejs": "^3.1.6",
+    "exec-root": "^1.0.9",
     "fs-extra": "^10.0.1",
+    "glob": "^8.0.1",
     "inquirer": "^8.2.2"
   }
 }
