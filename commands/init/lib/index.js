@@ -78,7 +78,11 @@ class InitCommand extends Command {
       // 使用ejs渲染替换模版中的一些信息，实现动态替换的效果 
       const templateIgnore = this.projectInfo.ignore || [];
       const ignore = ['**/node_modules/**', ...templateIgnore];
-      await this.ejsRender({ ignore });
+      try {
+        await this.ejsRender({ ignore });
+      } catch(err) {
+        log.error('ejs渲染失败', err.message)
+      }
 
       const { installCommand, startCommand } = this.projectInfo;
       try {
